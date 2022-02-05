@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 using System;
 
 
-namespace Unknown6656.Common;
+namespace Unknown6656;
 
 
 
@@ -72,7 +72,7 @@ public static unsafe class Currying
         (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
     <#=comment#>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Action<#=t2(j, i - j)#> Curry<#=t(i)#>(delegate*<#=t(i)#> f, <#=adecl#>) =>
+    public static Action<#=t2(j, i - j)#> Curry<#=t(i)#>(delegate*<#=t(i).Remove(t(i).Length - 1)#>, void> f, <#=adecl#>) =>
         (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
     <#=comment#>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
