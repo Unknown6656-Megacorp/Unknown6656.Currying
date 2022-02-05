@@ -18,10 +18,14 @@ using System;
 namespace Unknown6656.Common;
 
 
-public static class Currying
+
+/// <summary>
+/// Contains a set of extension methods for method currying and partial method application.
+/// </summary>
+public static unsafe class Currying
 {
 <#
-    int maxsize = 10;
+    int maxsize = 15;
 
     try
     {
@@ -41,14 +45,38 @@ public static class Currying
         {
             string adecl = string.Join(", ", Enumerable.Range(0, j).Select(x => $"T{x} arg{x}"));
             string a(int o, int n) => string.Join(", ", Enumerable.Range(o, n).Select(x => $"arg{x}"));
-#>
+            string comment = @"
+    /// <summary>
+    /// Partially applies the given parameters to the given function and returns the partially applied function.
+    /// </summary>";
 
+            for (int k = 0; k <= i; ++k)
+            {
+                comment += $"\n    /// <typeparam name=\"T{k}\">The generic type parameter <typeparamref name=\"T{k}\"/>.</typeparam>";
+
+                if (k < j)
+                    comment += $"\n    /// <param name=\"arg{k}\">The parameter no. {k} to be applied to the given function.</param>";
+            }
+
+            comment += @"
+    /// <param name=""f"">The function to be partially applied.</param>
+    /// <returns>The partially applied function.</returns>";
+#>
+    <#=comment#>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Action<#=t2(j, i - j)#> Curry<#=t(i)#>(this Action<#=t(i)#> f, <#=adecl#>) =>
         (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
-
+    <#=comment#>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Func<#=t2(j, i - j + 1)#> Curry<#=t(i + 1)#>(this Func<#=t(i + 1)#> f, <#=adecl#>) =>
+        (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
+    <#=comment#>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Action<#=t2(j, i - j)#> Curry<#=t(i)#>(delegate*<#=t(i)#> f, <#=adecl#>) =>
+        (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
+    <#=comment#>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Func<#=t2(j, i - j + 1)#> Curry<#=t(i + 1)#>(delegate*<#=t(i + 1)#> f, <#=adecl#>) =>
         (<#=a(j, i - j)#>) => f(<#=a(0, i)#>);
 <#
         }
